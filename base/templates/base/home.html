@@ -1,0 +1,12 @@
+{% extends 'base/main.html' %}
+
+{% block content %}
+<h1>Forum</h1>
+
+{% for topic in topics %}
+<div>
+    <a href="{% url 'rooms-page' topic.id %}">{{topic.name}}</a>
+</div>
+{% endfor %}
+
+{% endblock %}
