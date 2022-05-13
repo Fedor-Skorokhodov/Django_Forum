@@ -1,22 +1,43 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://kit.fontawesome.com/c8e84cd5fd.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/main_style.css' %}" />
 </head>
 <body>
-    <div>
-        {% if request.user.is_authenticated %}
-        <a href="{% url 'logout-page' %}">Log out</a>
-        {% else %}
-        <a href="{% url 'login-page' %}">Log in</a>
-        <a href="{% url 'register-page' %}">Register</a>
-        {% endif %}
-    </div>
+    <header>
+        <ul class="navbar">
+            {% if request.user.is_authenticated %}
+            <li class="navbar_element">
+                <a href="{% url 'logout-page' %}" >Log out</a>
+            </li>
+            {% else %}
+            <li class="navbar_element">
+                <a href="{% url 'login-page' %}" class="navbar_element">Log in</a>
+            </li>
+            <li class="navbar_element">
+                <a href="{% url 'register-page' %}" class="navbar_element">Register</a>
+            </li>
+            <li class="navbar_dropdown">
+                <a>Settings <i class="fa-solid fa-caret-down"></i> </a>
+                <div class="dropdown_content">
+                    <a href="{% url 'home-page' %}">Example</a>
+                    <a href="{% url 'home-page' %}">Example</a>
+                    <a href="{% url 'home-page' %}">Example</a>
+                </div>
+            </li>
 
-    {% block content %}
+            {% endif %}
+        </ul>
+    </header>
+    <main>
+        {% block content %}
 
-    {% endblock %}
+        {% endblock %}
+    </main>
 
 </body>
 </html>
