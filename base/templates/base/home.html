@@ -2,13 +2,15 @@
 
 {% block content %}
 <div class="main_container">
-    <h1>Forum</h1>
-
-    {% for topic in topics %}
-    <div>
-        <a href="{% url 'rooms-page' topic.id %}">{{topic.name}}</a>
+    <div class="main_container_first">
+        <h1>Popular rooms</h1>
     </div>
-    {% endfor %}
+
+    <div class="main_container_second">
+        {% for topic in topics %}
+        {% include 'base/components/topic_container.html' %}
+        {% endfor %}
+    </div>
 
 </div>
 {% endblock %}

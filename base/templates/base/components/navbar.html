@@ -1,0 +1,18 @@
+<ul class="navbar">
+    <li class="navbar_element">
+        <a href="{% url 'home-page' %}" >Home</a>
+    </li>
+
+    <li class="navbar_dropdown">
+        <a>Settings <i class="fa-solid fa-caret-down"></i> </a>
+        <div class="dropdown_content">
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'home-page' %}">Profile</a>
+            <a href="{% url 'logout-page' %}">Log out</a>
+            {% else %}
+            <a href="{% url 'login-page' %}">Log in</a>
+            <a href="{% url 'register-page' %}">Register</a>
+            {% endif %}
+        </div>
+    </li>
+</ul>

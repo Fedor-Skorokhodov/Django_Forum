@@ -9,29 +9,7 @@
 </head>
 <body>
     <header>
-        <ul class="navbar">
-            {% if request.user.is_authenticated %}
-            <li class="navbar_element">
-                <a href="{% url 'logout-page' %}" >Log out</a>
-            </li>
-            {% else %}
-            <li class="navbar_element">
-                <a href="{% url 'login-page' %}" class="navbar_element">Log in</a>
-            </li>
-            <li class="navbar_element">
-                <a href="{% url 'register-page' %}" class="navbar_element">Register</a>
-            </li>
-            <li class="navbar_dropdown">
-                <a>Settings <i class="fa-solid fa-caret-down"></i> </a>
-                <div class="dropdown_content">
-                    <a href="{% url 'home-page' %}">Example</a>
-                    <a href="{% url 'home-page' %}">Example</a>
-                    <a href="{% url 'home-page' %}">Example</a>
-                </div>
-            </li>
-
-            {% endif %}
-        </ul>
+        {% include 'base/components/navbar.html' %}
     </header>
     <main>
         {% block content %}
