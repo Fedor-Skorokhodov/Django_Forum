@@ -1,12 +1,21 @@
 {% extends 'base/main.html' %}
 
 {% block content %}
-<h2>Rooms in {{topic_name}}</h2>
+<div class="main_container">
+    <div class="main_container_first">
+        <h1>Popular rooms</h1>
+    </div>
 
-{% for room in rooms %}
-<div>
-    {{room.name}}
+    <div class="main_container_second">
+        <h1>{{topic_name}}</h1>
+        <p>{{description}}</p>
+
+        {% for room in rooms %}
+        <div>
+            {% include 'base/components/room_container.html' %}
+        </div>
+        {% endfor %}
+    </div>
 </div>
-{% endfor %}
 
 {% endblock %}

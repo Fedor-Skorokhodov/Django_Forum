@@ -1,5 +1,5 @@
 
-<a href="{% url 'rooms-page' topic.id %}" class="topic_container">
+<a href="{% url 'topic-page' topic.id %}" class="topic_container">
     <small>{{topic.room_set.all.count}}  rooms</small>
     <h1>{{topic.name}} </h1>
     <p>{{topic.description}}</p>

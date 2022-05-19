@@ -1,9 +1,17 @@
 :root {
     --navbar-color: #323232;
     --navbar-element-color: #3d3d3d;
+    --background-color: #1a1a1a
 
 }
 
+body {
+    background: var(--background-color);
+}
+
+* {
+    color: white;
+}
 
 /*  NAVBAR SECTION  */
 
@@ -21,9 +29,6 @@
 .navbar_element {
     float: left;
     background: var(--navbar-element-color);
-    padding: 4px;
-    padding-top: 16px;
-    padding-bottom: 20px;
     margin-left: 3px;
 
 }
@@ -34,6 +39,9 @@
 }
 
 .navbar_element a {
+    padding: 4px;
+    padding-top: 16px;
+    padding-bottom: 20px;
     display: block;
     text-decoration: none;
     color: white;
@@ -117,6 +125,52 @@
     color: white;
 }
 
+.topic_container h1, .topic_container p {
+    text-align: center;
+}
+
 .topic_container:hover {
     background: var(--navbar-element-color);
+}
+
+.room_container {
+    background: var(--navbar-color);
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 20px;
+    display: block;
+    text-decoration: none;
+    color: white;
+}
+
+.message_container {
+    margin-top: 40px;
+}
+
+.message_post_container {
+    position: relative;
+    padding: 15px;
+    left: 10%;
+    width: 80%;
+    background: var(--navbar-color);
+}
+
+.message_post_container textarea {
+    display: block;
+    background: var(--navbar-element-color);
+    border: none;
+    margin: auto;
+    width: 90%;
+}
+
+.message_post_container button {
+    display: block;
+    background: var(--navbar-element-color);
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    margin: auto;
+    width: 20%;
+    padding: 10px;
 }

@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .models import Topic, Room
+from .models import Topic, Room, Message
 
 
 def login_view(request):
@@ -49,9 +49,25 @@ def home_view(request):
     return render(request, 'base/home.html', context)
 
 
-def rooms_view(request, key):
+def topic_view(request, key):
     topic_name = Topic.objects.get(id=key).name
+    description = Topic.objects.get(id=key).description
     rooms = Room.objects.filter(topic=key)
-    context = {'rooms': rooms, 'topic_name': topic_name}
+    context = {'rooms': rooms, 'topic_name': topic_name, 'description': description}
     return render(request, 'base/topic_rooms.html', context)
+
+
+def room_view(request, key):
+    room = Room.objects.get(id=key)
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if not str.isspace(content):
+            message = Message.objects.create(
+                user=request.user,
+                room=room,
+                content=content,
+            )
+        return redirect('room-page', key=key)
+    context = {'room': room}
+    return render(request, 'base/room.html', context)
 

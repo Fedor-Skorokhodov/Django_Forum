@@ -1,0 +1,6 @@
+
+<a href="{% url 'room-page' room.id %}" class="room_container">
+    <small>{{room.message_set.all.count}}  posts</small>
+    <h1>{{room.name}} </h1>
+    <p>started by {{room.host.username}}</p>
+</a>

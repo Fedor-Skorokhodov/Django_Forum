@@ -42,3 +42,6 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     is_changed = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.content
+
