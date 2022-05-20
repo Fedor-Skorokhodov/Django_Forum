@@ -1,6 +1,11 @@
 
-<a href="{% url 'room-page' room.id %}" class="room_container">
-    <small>{{room.message_set.all.count}}  posts</small>
-    <h1>{{room.name}} </h1>
-    <p>started by {{room.host.username}}</p>
+<a href="{% url 'room-page' room.object.id %}" class="room_container">
+    <small>{{room.object.message_set.all.count}}  posts by {{room.object.participants.all.count}}
+        <i class="fa-regular fa-user"></i>, {{room.object.viewers.all.count}} <i class="fa-regular fa-eye"></i>
+    </small>
+    <small>
+        udated {{room.updated|timesince}} ago
+    </small>
+    <h1>{{room.object.name}} </h1>
+    <p>started by {{room.object.host.username}}</p>
 </a>

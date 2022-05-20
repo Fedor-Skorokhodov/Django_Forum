@@ -25,6 +25,8 @@ class Room(models.Model):
     description = models.TextField(null=True, blank=True)
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
+    viewers = models.ManyToManyField(User, related_name='viewers', blank=True)
+    participants = models.ManyToManyField(User, related_name='participants', blank=True)
     is_closed = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -41,6 +43,10 @@ class Message(models.Model):
     answer_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     is_changed = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created']
+        get_latest_by = ['created']
 
     def __str__(self):
         return self.content

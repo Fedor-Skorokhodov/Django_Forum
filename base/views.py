@@ -52,13 +52,22 @@ def home_view(request):
 def topic_view(request, key):
     topic_name = Topic.objects.get(id=key).name
     description = Topic.objects.get(id=key).description
+    rooms_container = []
     rooms = Room.objects.filter(topic=key)
-    context = {'rooms': rooms, 'topic_name': topic_name, 'description': description}
+    for object in rooms:
+        try:
+            updated = object.message_set.latest().created
+        except:
+            updated = object.created
+        rooms_container.append({'object': object, 'updated': updated})
+    context = {'rooms': rooms_container, 'topic_name': topic_name, 'description': description}
     return render(request, 'base/topic_rooms.html', context)
 
 
 def room_view(request, key):
     room = Room.objects.get(id=key)
+    if request.user.is_authenticated:
+        room.viewers.add(request.user)
     if request.method == 'POST':
         content = request.POST.get('content')
         if not str.isspace(content):
@@ -67,6 +76,7 @@ def room_view(request, key):
                 room=room,
                 content=content,
             )
+            room.participants.add(request.user)
         return redirect('room-page', key=key)
     context = {'room': room}
     return render(request, 'base/room.html', context)
