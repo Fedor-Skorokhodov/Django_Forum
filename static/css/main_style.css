@@ -144,8 +144,22 @@ body {
     color: white;
 }
 
+.room_container:hover {
+    background: var(--navbar-element-color);
+}
+
+.room_container p {
+    color: grey;
+    font-size: 85%;
+}
+
 .message_container {
     margin-top: 40px;
+}
+
+.message_container p {
+    color: grey;
+    font-size: 75%;
 }
 
 .message_post_container {
@@ -162,6 +176,8 @@ body {
     border: none;
     margin: auto;
     width: 90%;
+    height: 100px;
+    resize: none;
 }
 
 .message_post_container button {
@@ -173,4 +189,49 @@ body {
     margin: auto;
     width: 20%;
     padding: 10px;
+}
+
+.message_post_container button:hover {
+    color: var(--navbar-color);
+    background: white;
+}
+
+.login_container {
+    background: var(--navbar-color);
+    position: relative;
+    margin-top: 100px;
+    left: 35%;
+    width: 30%;
+    padding: 20px;
+}
+
+.login_container input {
+    width: 100%;
+    margin-bottom: 15px;
+    display: block;
+    background: var(--navbar-element-color);
+    border: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.login_container input:hover {
+    background: white;
+    color: var(--navbar-color);
+}
+
+.login_container button {
+    width: 100%;
+    margin-bottom: 15px;
+    background: var(--navbar-element-color);
+    border-style: solid:
+    border-width: 1px;
+    border-color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.login_container button:hover {
+    background: white;
+    color: var(--navbar-color);
 }

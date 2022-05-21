@@ -54,12 +54,12 @@ def topic_view(request, key):
     description = Topic.objects.get(id=key).description
     rooms_container = []
     rooms = Room.objects.filter(topic=key)
-    for object in rooms:
+    for room in rooms:
         try:
-            updated = object.message_set.latest().created
+            updated = room.message_set.latest().created
         except:
-            updated = object.created
-        rooms_container.append({'object': object, 'updated': updated})
+            updated = room.created
+        rooms_container.append({'object': room, 'updated': updated})
     context = {'rooms': rooms_container, 'topic_name': topic_name, 'description': description}
     return render(request, 'base/topic_rooms.html', context)
 

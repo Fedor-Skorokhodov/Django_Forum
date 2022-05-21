@@ -8,9 +8,7 @@
 
     <div class="main_container_second">
         {% for message in room.message_set.all %}
-        <div>
-            {% include 'base/components/message_container.html' %}
-        </div>
+        {% include 'base/components/message_container.html' %}
         {% endfor %}
     </div>
 
@@ -20,7 +18,7 @@
     {% if user.is_authenticated %}
     <form action="" method="POST">
         {% csrf_token %}
-        <textarea name="content" required="required"></textarea>
+        <textarea name="content" required="required" placeholder="Type your message..."></textarea>
         <button type="submit">Post</button>
     </form>
     {% else %}

@@ -1,6 +1,6 @@
 
 <a href="{% url 'topic-page' topic.id %}" class="topic_container">
-    <small>{{topic.room_set.all.count}}  rooms</small>
+    <small>{{topic.room_set.all.count}}  <i class="fa-regular fa-comments"></i></small>
     <h1>{{topic.name}} </h1>
     <p>{{topic.description}}</p>
 </a>
