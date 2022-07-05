@@ -9,6 +9,9 @@
     <div class="main_container_second">
         <h1>{{topic_name}}</h1>
         <p>{{description}}</p>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'room-create-page' topic_key %}">Create room</a>
+        {% endif %}
 
         {% for room in rooms %}
         <div>

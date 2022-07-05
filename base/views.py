@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .models import Topic, Room, Message
+from .forms import RoomForm
 
 
 def login_view(request):
@@ -60,7 +61,7 @@ def topic_view(request, key):
         except:
             updated = room.created
         rooms_container.append({'object': room, 'updated': updated})
-    context = {'rooms': rooms_container, 'topic_name': topic_name, 'description': description}
+    context = {'rooms': rooms_container, 'topic_name': topic_name, 'description': description, 'topic_key': key}
     return render(request, 'base/topic_rooms.html', context)
 
 
@@ -68,7 +69,7 @@ def room_view(request, key):
     room = Room.objects.get(id=key)
     if request.user.is_authenticated:
         room.viewers.add(request.user)
-    if request.method == 'POST':
+    if request.method == 'POST' and not room.is_closed:
         content = request.POST.get('content')
         if not str.isspace(content):
             message = Message.objects.create(
@@ -81,3 +82,39 @@ def room_view(request, key):
     context = {'room': room}
     return render(request, 'base/room.html', context)
 
+
+@login_required(login_url='login-page')
+def room_create_view(request, key):
+    form = RoomForm()
+    topic_name = Topic.objects.get(id=key).name
+    if request.method == 'POST':
+        form = RoomForm(request.POST)
+        if form.is_valid():
+            room = Room.objects.create(
+                name=form.cleaned_data['name'],
+                description=form.cleaned_data['description'],
+                host=request.user,
+                topic=Topic.objects.get(id=key)
+            )
+            return redirect('room-page', key=room.id)
+    return render(request, 'base/create_room.html', {'form': form, 'topic_name': topic_name})
+
+
+@login_required(login_url='login-page')
+def room_delete_view(request, key):
+    room = Room.objects.get(id=key)
+    if request.user == room.host:
+        room.delete()
+    return redirect('home-page')
+
+
+@login_required(login_url='login-page')
+def room_change_status_view(request, key):
+    room = Room.objects.get(id=key)
+    if request.user == room.host:
+        if room.is_closed:
+            room.is_closed = False
+        else:
+            room.is_closed = True
+        room.save()
+    return redirect('room-page', key=key)

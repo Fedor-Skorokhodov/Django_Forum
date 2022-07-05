@@ -7,6 +7,24 @@
     </div>
 
     <div class="main_container_second">
+        <h1>
+            {{room.name}} <a href="{% url 'topic-page' room.topic.id %}">({{room.topic.name}})</a>
+            {% if room.is_closed %}
+            (Closed)
+            {% endif %}
+        </h1>
+
+        {% if user == room.host %}
+        <a href="{% url 'room-delete-page' room.id %}"><i class="fa-regular fa-trash-can"></i></a>
+        <a href="{% url 'room-change-status-page' room.id %}">
+            {% if room.is_closed %}
+            Open Room
+            {% else %}
+            Close Room
+            {% endif %}
+        </a>
+        {% endif %}
+
         {% for message in room.message_set.all %}
         {% include 'base/components/message_container.html' %}
         {% endfor %}
@@ -15,12 +33,14 @@
 </div>
 
 <div class="message_post_container">
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and not room.is_closed %}
     <form action="" method="POST">
         {% csrf_token %}
         <textarea name="content" required="required" placeholder="Type your message..."></textarea>
         <button type="submit">Post</button>
     </form>
+    {% elif room.is_closed %}
+    <p>The room is closed</p>
     {% else %}
     <p>Only authenticated user can leave messages</p>
     {% endif %}
