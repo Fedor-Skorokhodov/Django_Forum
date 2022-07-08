@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.http import HttpResponseNotFound
 from .models import Topic, Room, Message
-from .forms import RoomForm
+from .forms import RoomForm, UserCreationFormCustom
 
 
 def login_view(request):
@@ -25,13 +25,15 @@ def login_view(request):
 
 
 def register_view(request):
-    form = UserCreationForm()
+    if request.user.is_authenticated:
+        return redirect('home-page')
+    form = UserCreationFormCustom()
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserCreationFormCustom(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')
+            return redirect('home-page')
         else:
             messages.error(request, 'Invalid data')
     context = {'form': form}
@@ -51,12 +53,16 @@ def home_view(request):
 
 
 def topic_view(request, key):
-    topic_name = Topic.objects.get(id=key).name
+    try:
+        topic_name = Topic.objects.get(id=key).name
+    except:
+        return HttpResponseNotFound()
     description = Topic.objects.get(id=key).description
     rooms_container = []
     rooms = Room.objects.filter(topic=key)
     for room in rooms:
         try:
+            # Set room update time according to last message. If messages not exist, set to the room creation time
             updated = room.message_set.latest().created
         except:
             updated = room.created
@@ -66,7 +72,10 @@ def topic_view(request, key):
 
 
 def room_view(request, key):
-    room = Room.objects.get(id=key)
+    try:
+        room = Room.objects.get(id=key)
+    except:
+        return HttpResponseNotFound()
     if request.user.is_authenticated:
         room.viewers.add(request.user)
     if request.method == 'POST' and not room.is_closed:
@@ -78,7 +87,6 @@ def room_view(request, key):
                 content=content,
             )
             room.participants.add(request.user)
-        return redirect('room-page', key=key)
     context = {'room': room}
     return render(request, 'base/room.html', context)
 
@@ -86,7 +94,10 @@ def room_view(request, key):
 @login_required(login_url='login-page')
 def room_create_view(request, key):
     form = RoomForm()
-    topic_name = Topic.objects.get(id=key).name
+    try:
+        topic_name = Topic.objects.get(id=key).name
+    except:
+        return HttpResponseNotFound()
     if request.method == 'POST':
         form = RoomForm(request.POST)
         if form.is_valid():
@@ -102,7 +113,10 @@ def room_create_view(request, key):
 
 @login_required(login_url='login-page')
 def room_delete_view(request, key):
-    room = Room.objects.get(id=key)
+    try:
+        room = Room.objects.get(id=key)
+    except:
+        return HttpResponseNotFound()
     if request.user == room.host:
         room.delete()
     return redirect('home-page')
@@ -110,7 +124,10 @@ def room_delete_view(request, key):
 
 @login_required(login_url='login-page')
 def room_change_status_view(request, key):
-    room = Room.objects.get(id=key)
+    try:
+        room = Room.objects.get(id=key)
+    except:
+        return HttpResponseNotFound()
     if request.user == room.host:
         if room.is_closed:
             room.is_closed = False
