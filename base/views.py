@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseNotFound
-from .models import Topic, Room, Message
+from .models import Topic, Room, Message, User
 from .forms import RoomForm, UserCreationFormCustom
 
 
@@ -135,3 +135,29 @@ def room_change_status_view(request, key):
             room.is_closed = True
         room.save()
     return redirect('room-page', key=key)
+
+
+def profile_view(request, key):
+    try:
+        profile_user = User.objects.get(id=key)
+    except:
+        return HttpResponseNotFound()
+    is_modifications_allowed = request.user == profile_user
+    # Users can only modify their own profiles
+
+    if request.method == 'POST' and is_modifications_allowed:
+        username = request.POST.get('username')
+        if username != profile_user.username:
+            # if username was changed
+            if not User.objects.filter(username=username).exists():
+                profile_user.username = username
+            else:
+                messages.error(request, 'User with that username already exists')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        profile_user.first_name = first_name
+        profile_user.last_name = last_name
+        profile_user.save()
+
+    context = {'profile_user': profile_user, 'is_modifications_allowed': is_modifications_allowed}
+    return render(request, 'base/profile.html', context)

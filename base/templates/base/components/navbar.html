@@ -7,7 +7,7 @@
         <a>Settings <i class="fa-solid fa-caret-down"></i> </a>
         <div class="dropdown_content">
             {% if request.user.is_authenticated %}
-            <a href="{% url 'home-page' %}">Profile</a>
+            <a href="{% url 'profile-page' request.user.id %}">Profile</a>
             <a href="{% url 'logout-page' %}">Log out</a>
             {% else %}
             <a href="{% url 'login-page' %}">Log in</a>

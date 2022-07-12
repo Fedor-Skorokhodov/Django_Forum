@@ -61,3 +61,7 @@ class TestUrls(TestCase):
     def test_delete_room_url_is_resolved(self):
         url = reverse('room-delete-page', args=['1'])
         self.assertEquals(resolve(url).func, views.room_delete_view)
+
+    def test_profile_url_is_resolved(self):
+        url = reverse('profile-page', args=['1'])
+        self.assertEquals(resolve(url).func, views.profile_view)

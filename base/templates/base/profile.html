@@ -1,0 +1,34 @@
+{% extends 'base/main.html' %}
+
+{% block content %}
+<div id="div_profile" class="main_container">
+    <div class="main_container_first">
+        <h1>Popular rooms</h1>
+    </div>
+    <div class="main_container_second">
+           <p>{{profile_user.email}}  ({{profile_user.username}}) </p>
+        <p>First name: {{profile_user.first_name}}</p>
+        <p>Last name: {{profile_user.last_name}}</p>
+
+        {% if is_modifications_allowed %}
+        <button onclick="show_profile_modification_form()">Modify</button>
+        {% endif %}
+    </div>
+</div>
+
+{% if is_modifications_allowed %}
+<div id="div_modification" style="display:none" class="form_container">
+     <form method="POST" action="">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" value="{{profile_user.username}}"/>
+        <label for="username">first_name</label>
+        <input type="text" name="first_name" id="first_name" value="{{profile_user.first_name}}"/>
+        <label for="username">last_name</label>
+        <input type="text" name="last_name" id="last_name" value="{{profile_user.last_name}}"/>
+        <button type="submit">Save</button>
+    </form>
+    <button onclick="hide_profile_modification_form()">Back</button>
+</div>
+{% endif %}
+{% endblock %}
