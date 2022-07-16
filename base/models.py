@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Count
 from django.contrib.auth.models import AbstractUser
 
 
@@ -31,6 +32,13 @@ class Room(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     closed = models.DateTimeField(null=True, blank=True)
+
+    @staticmethod
+    def get_popular():
+        if Room.objects.all().count() > 5:
+            return Room.objects.annotate(p_count=Count('participants')).order_by('-p_count')[:5]
+        else:
+            return []
 
     def __str__(self):
         return self.name

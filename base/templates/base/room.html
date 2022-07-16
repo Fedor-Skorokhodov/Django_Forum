@@ -4,6 +4,7 @@
 <div class="main_container">
     <div class="main_container_first">
         <h1>Popular rooms</h1>
+        {% include 'base/components/popular_rooms.html' %}
     </div>
 
     <div class="main_container_second">
@@ -28,23 +29,25 @@
         {% for message in room.message_set.all %}
         {% include 'base/components/message_container.html' %}
         {% endfor %}
+
+        <div class="message_post_container">
+            {% if user.is_authenticated and not room.is_closed %}
+            <form action="" method="POST">
+                {% csrf_token %}
+                <textarea name="content" required="required" placeholder="Type your message..."></textarea>
+                <button type="submit">Post</button>
+            </form>
+            {% elif room.is_closed %}
+            <p>The room is closed</p>
+            {% else %}
+            <p>Only authenticated user can leave messages</p>
+            {% endif %}
+        </div>
     </div>
 
 </div>
 
-<div class="message_post_container">
-    {% if user.is_authenticated and not room.is_closed %}
-    <form action="" method="POST">
-        {% csrf_token %}
-        <textarea name="content" required="required" placeholder="Type your message..."></textarea>
-        <button type="submit">Post</button>
-    </form>
-    {% elif room.is_closed %}
-    <p>The room is closed</p>
-    {% else %}
-    <p>Only authenticated user can leave messages</p>
-    {% endif %}
-</div>
+
 
 
 {% endblock %}

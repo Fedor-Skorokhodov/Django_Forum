@@ -4,9 +4,11 @@
 <div class="main_container">
     <div class="main_container_first">
         <h1>Popular rooms</h1>
+        {% include 'base/components/popular_rooms.html' %}
     </div>
 
     <div class="main_container_second">
+        <h1>Topics</h1>
         {% for topic in topics %}
         {% include 'base/components/topic_container.html' %}
         {% endfor %}

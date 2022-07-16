@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.http import HttpResponseNotFound
 from .models import Topic, Room, Message, User
 from .forms import RoomForm, UserCreationFormCustom
+from datetime import datetime
 
 
 def login_view(request):
@@ -48,7 +49,7 @@ def logout_view(request):
 
 def home_view(request):
     topics = Topic.objects.all()
-    context = {'topics': topics}
+    context = {'topics': topics, 'popular_rooms': Room.get_popular()}
     return render(request, 'base/home.html', context)
 
 
@@ -58,16 +59,12 @@ def topic_view(request, key):
     except:
         return HttpResponseNotFound()
     description = Topic.objects.get(id=key).description
-    rooms_container = []
     rooms = Room.objects.filter(topic=key)
-    for room in rooms:
-        try:
-            # Set room update time according to last message. If messages not exist, set to the room creation time
-            updated = room.message_set.latest().created
-        except:
-            updated = room.created
-        rooms_container.append({'object': room, 'updated': updated})
-    context = {'rooms': rooms_container, 'topic_name': topic_name, 'description': description, 'topic_key': key}
+    context = {'rooms': rooms,
+               'topic_name': topic_name,
+               'description': description,
+               'topic_key': key,
+               'popular_rooms': Room.get_popular()}
     return render(request, 'base/topic_rooms.html', context)
 
 
@@ -87,7 +84,9 @@ def room_view(request, key):
                 content=content,
             )
             room.participants.add(request.user)
-    context = {'room': room}
+            room.updated = datetime.now
+            room.save()
+    context = {'room': room, 'popular_rooms': Room.get_popular()}
     return render(request, 'base/room.html', context)
 
 
@@ -159,5 +158,7 @@ def profile_view(request, key):
         profile_user.last_name = last_name
         profile_user.save()
 
-    context = {'profile_user': profile_user, 'is_modifications_allowed': is_modifications_allowed}
+    context = {'profile_user': profile_user,
+               'is_modifications_allowed': is_modifications_allowed,
+               'popular_rooms': Room.get_popular()}
     return render(request, 'base/profile.html', context)

@@ -1,10 +1,10 @@
 
-<a href="{% url 'room-page' room.object.id %}" class="room_container">
-    <p>{{room.object.message_set.all.count}}  posts by {{room.object.participants.all.count}}
+<a href="{% url 'room-page' room.id %}" class="room_container">
+    <p>{{room.message_set.all.count}}  posts by {{room.participants.all.count}}
         <i class="fa-regular fa-user"></i>,
-        {{room.object.viewers.all.count}} <i class="fa-regular fa-eye"></i>
+        {{room.viewers.all.count}} <i class="fa-regular fa-eye"></i>
         updated {{room.updated|timesince}} ago
     </p>
-    <h1>{{room.object.name}} </h1>
-    <p>started by {{room.object.host.username}}</p>
+    <h1>{{room.name}} </h1>
+    <p>started by {{room.host.username}}</p>
 </a>

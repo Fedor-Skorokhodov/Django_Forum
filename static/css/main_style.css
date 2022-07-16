@@ -110,8 +110,9 @@ body {
 .main_container {
     display: grid;
     grid-template-columns: 1fr 3fr;
-    padding-left: 10%;
+    padding-left: 3%;
     padding-right: 10%;
+    margin-bottom: 20px;
 }
 
 .main_container button {
@@ -128,6 +129,14 @@ body {
 .main_container button:hover {
     background: white;
     color: var(--navbar-color);
+}
+
+.main_container_first {
+    padding-right: 8%;
+}
+
+.main_container_second {
+    padding-left: 4%;
 }
 
 .topic_container {
@@ -181,8 +190,6 @@ body {
 .message_post_container {
     position: relative;
     padding: 15px;
-    left: 10%;
-    width: 80%;
     background: var(--navbar-color);
 }
 
