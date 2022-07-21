@@ -73,6 +73,7 @@ def room_view(request, key):
         room = Room.objects.get(id=key)
     except:
         return HttpResponseNotFound()
+    anchor = None
     if request.user.is_authenticated:
         room.viewers.add(request.user)
     if request.method == 'POST' and not room.is_closed:
@@ -86,8 +87,32 @@ def room_view(request, key):
             room.participants.add(request.user)
             room.updated = datetime.now
             room.save()
-    context = {'room': room, 'popular_rooms': Room.get_popular()}
+            anchor = '#message_' + str(message.id)
+    context = {'room': room, 'popular_rooms': Room.get_popular(), 'scroll_to_element': anchor}
     return render(request, 'base/room.html', context)
+
+
+@login_required(login_url='login-page')
+def message_rating_view(request, key):
+    action = request.GET.get('action') if request.GET.get('action') else 'e'
+    message = Message.objects.get(id=key)
+    if action == 'p':
+        if message.pluses.filter(id=request.user.id).exists():
+            message.pluses.remove(request.user)
+        elif message.minuses.filter(id=request.user.id).exists():
+            message.minuses.remove(request.user)
+            message.pluses.add(request.user)
+        else:
+            message.pluses.add(request.user)
+    if action == 'm':
+        if message.minuses.filter(id=request.user.id).exists():
+            message.minuses.remove(request.user)
+        elif message.pluses.filter(id=request.user.id).exists():
+            message.pluses.remove(request.user)
+            message.minuses.add(request.user)
+        else:
+            message.minuses.add(request.user)
+    return redirect('room-page', key=message.room.id)
 
 
 @login_required(login_url='login-page')

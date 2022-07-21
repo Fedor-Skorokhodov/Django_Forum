@@ -8,3 +8,7 @@ function hide_profile_modification_form() {
     document.getElementById('div_modification').style.display = 'none';
 }
 
+function scroll_to(element_id) {
+    location.hash = element_id;
+}
+

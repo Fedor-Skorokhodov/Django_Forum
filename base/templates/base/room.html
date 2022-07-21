@@ -46,8 +46,9 @@
     </div>
 
 </div>
-
-
-
-
+{% if scroll_to_element %}
+<script>
+    location.hash = {{scroll_to_element}};
+</script>
+{% endif %}
 {% endblock %}

@@ -51,6 +51,8 @@ class Message(models.Model):
     answer_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     is_changed = models.BooleanField(default=False)
+    pluses = models.ManyToManyField(User, related_name='pluses', blank=True)
+    minuses = models.ManyToManyField(User, related_name='minuses', blank=True)
 
     class Meta:
         ordering = ['-created']

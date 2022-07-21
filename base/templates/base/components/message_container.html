@@ -1,4 +1,6 @@
-<div class="message_container">
+<div class="message_container" id="message_{{message.id}}">
     {{message}}
     <p>by {{message.user.username}} - {{message.created}}</p>
+    <a href="{% url 'message-rating-page' message.id %}?action=p">+{{message.pluses.all.count}}</a>
+    <a href="{% url 'message-rating-page' message.id %}?action=m">-{{message.minuses.all.count}}</a>
 </div>

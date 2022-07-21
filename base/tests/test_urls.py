@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse, resolve
 from .. import views
-from ..models import Topic, Room, User
+from ..models import Topic, Room, User, Message
 
 
 class TestUrls(TestCase):
@@ -24,6 +24,12 @@ class TestUrls(TestCase):
             name='Test Room',
             host=User.objects.get(id=1),
             topic=Topic.objects.get(id=1),
+        )
+        Message.objects.create(
+            id=1,
+            content='test',
+            user=User.objects.get(id=1),
+            room=Room.objects.get(id=1),
         )
 
     def test_home_url_is_resolved(self):
@@ -65,3 +71,7 @@ class TestUrls(TestCase):
     def test_profile_url_is_resolved(self):
         url = reverse('profile-page', args=['1'])
         self.assertEquals(resolve(url).func, views.profile_view)
+
+    def message_rating_url_is_resolved(self):
+        url = reverse('message-rating-page', args=['1'])
+        self.assertEquals(resolve(url).func, views.message_rating_view)

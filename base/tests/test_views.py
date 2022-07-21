@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from ..models import User, Topic, Room
+from ..models import User, Topic, Room, Message
 from django.contrib import auth
 
 
@@ -39,6 +39,13 @@ class TestViews(TestCase):
             host=User.objects.get(id=1),
             topic=Topic.objects.get(id=1),
         )
+        Message.objects.create(
+            id=1,
+            content='test',
+            user=User.objects.get(id=1),
+            room=Room.objects.get(id=1),
+        )
+
         self.client = Client()
 
     def test_home_view_GET(self):
@@ -305,6 +312,7 @@ class TestViews(TestCase):
         username2 = User.objects.get(id=2).username
         self.assertEqual(username2_start, username2)
         self.assertEqual(response.status_code, 200)
+        self.client.logout()
 
     def test_profile_POST_own_not_unique_username(self):
         self.client.login(email='TestEmail@gmail.com', password='1234Test5678')
@@ -319,6 +327,7 @@ class TestViews(TestCase):
         self.assertNotEqual(username, username2)
         self.assertEqual(username, username_start)
         self.assertEqual(response.status_code, 200)
+        self.client.logout()
 
     def test_profile_POST_own_unique_username(self):
         self.client.login(email='TestEmail@gmail.com', password='1234Test5678')
@@ -338,3 +347,35 @@ class TestViews(TestCase):
         self.assertEqual(first_name, first_name_start + 'changed')
         self.assertEqual(last_name, last_name_start + 'changed')
         self.assertEqual(response.status_code, 200)
+        self.client.logout()
+
+    def test_message_rating_view_GET_not_logged_in(self):
+        response = self.client.get('%s?action=%s' % (reverse('message-rating-page', args=['1']), 'p'))
+        self.assertEqual(Message.objects.get(id=1).pluses.all().count(), 0)
+        self.assertEqual(Message.objects.get(id=1).minuses.all().count(), 0)
+        self.assertEqual(response.status_code, 302)
+
+    def test_message_rating_view_get(self):
+        self.client.login(email='TestEmail@gmail.com', password='1234Test5678')
+        response = self.client.get('%s?action=%s' % (reverse('message-rating-page', args=['1']), 'p'))
+        self.assertEqual(Message.objects.get(id=1).pluses.all().count(), 1)
+        self.assertEqual(Message.objects.get(id=1).minuses.all().count(), 0)
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.get('%s?action=%s' % (reverse('message-rating-page', args=['1']), 'p'))
+        self.assertEqual(Message.objects.get(id=1).pluses.all().count(), 0)
+        self.assertEqual(Message.objects.get(id=1).minuses.all().count(), 0)
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.get('%s?action=%s' % (reverse('message-rating-page', args=['1']), 'm'))
+        self.assertEqual(Message.objects.get(id=1).pluses.all().count(), 0)
+        self.assertEqual(Message.objects.get(id=1).minuses.all().count(), 1)
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.get('%s?action=%s' % (reverse('message-rating-page', args=['1']), 'p'))
+        self.assertEqual(Message.objects.get(id=1).pluses.all().count(), 1)
+        self.assertEqual(Message.objects.get(id=1).minuses.all().count(), 0)
+        self.assertEqual(response.status_code, 302)
+        self.client.get('%s?action=%s' % (reverse('message-rating-page', args=['1']), 'p'))
+        self.client.logout()
+
