@@ -26,7 +26,29 @@
         </a>
         {% endif %}
 
-        {% for message in room.message_set.all %}
+        {% if total_pages > 1 %}
+        <div>
+            {% if current_page != 1 %}
+                <a href="{% url 'room-page' room.id %}?page=1">
+                    <button class="pagination_button">1</button>
+                </a>
+                <a href="{% url 'room-page' room.id %}?page={{current_page|add:'-1'}}">
+                    <button class="pagination_button">-</button>
+                </a>
+            {% endif %}
+            <button class="pagination_button">{{current_page}}</button>
+            {% if current_page != total_pages %}
+                <a href="{% url 'room-page' room.id %}?page={{current_page|add:'1'}}">
+                    <button class="pagination_button">+</button>
+                </a>
+                <a href="{% url 'room-page' room.id %}?page={{total_pages}}">
+                    <button class="pagination_button">{{total_pages}}</button>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% for message in messages_to_render %}
         {% include 'base/components/message_container.html' %}
         {% endfor %}
 
@@ -46,9 +68,4 @@
     </div>
 
 </div>
-{% if scroll_to_element %}
-<script>
-    location.hash = {{scroll_to_element}};
-</script>
-{% endif %}
 {% endblock %}

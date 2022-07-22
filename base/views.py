@@ -1,3 +1,5 @@
+import math
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -73,7 +75,22 @@ def room_view(request, key):
         room = Room.objects.get(id=key)
     except:
         return HttpResponseNotFound()
-    anchor = None
+
+    page = request.GET.get('page') if request.GET.get('page') else '1'
+    if str.isdigit(page):
+        page = int(page)
+    else:
+        page = 1
+
+    messages_on_page = 15
+    total_messages = Message.objects.filter(room=key).count()
+    total_pages = math.ceil(total_messages/messages_on_page)
+    if page > total_pages or page <= 0: page = 1
+    if page == total_pages:
+        # if last page
+        messages_to_render = Message.objects.filter(room=key)[(page - 1) * messages_on_page:]
+    else:
+        messages_to_render = Message.objects.filter(room=key)[(page - 1) * messages_on_page: page * messages_on_page]
     if request.user.is_authenticated:
         room.viewers.add(request.user)
     if request.method == 'POST' and not room.is_closed:
@@ -87,15 +104,21 @@ def room_view(request, key):
             room.participants.add(request.user)
             room.updated = datetime.now
             room.save()
-            anchor = '#message_' + str(message.id)
-    context = {'room': room, 'popular_rooms': Room.get_popular(), 'scroll_to_element': anchor}
+    context = {'room': room,
+               'popular_rooms': Room.get_popular(),
+               'messages_to_render': messages_to_render,
+               'total_pages': total_pages,
+               'current_page': page}
     return render(request, 'base/room.html', context)
 
 
 @login_required(login_url='login-page')
 def message_rating_view(request, key):
+    try:
+        message = Message.objects.get(id=key)
+    except:
+        return HttpResponseNotFound()
     action = request.GET.get('action') if request.GET.get('action') else 'e'
-    message = Message.objects.get(id=key)
     if action == 'p':
         if message.pluses.filter(id=request.user.id).exists():
             message.pluses.remove(request.user)

@@ -12,7 +12,7 @@
         <p>Last name: {{profile_user.last_name}}</p>
 
         {% if is_modifications_allowed %}
-        <button onclick="show_profile_modification_form()">Modify</button>
+        <button onclick="show_profile_modification_form()" class="universal_button">Modify</button>
         {% endif %}
     </div>
 </div>
@@ -27,9 +27,9 @@
         <input type="text" name="first_name" id="first_name" value="{{profile_user.first_name}}"/>
         <label for="username">last_name</label>
         <input type="text" name="last_name" id="last_name" value="{{profile_user.last_name}}"/>
-        <button type="submit">Save</button>
+        <button type="submit" class="universal_button">Save</button>
     </form>
-    <button onclick="hide_profile_modification_form()">Back</button>
+    <button onclick="hide_profile_modification_form()" class="universal_button">Back</button>
 </div>
 {% endif %}
 {% endblock %}

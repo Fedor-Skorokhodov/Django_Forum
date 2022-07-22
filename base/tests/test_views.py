@@ -149,6 +149,10 @@ class TestViews(TestCase):
         response = self.client.get(reverse('room-page', args=['24']))
         self.assertEqual(response.status_code, 404)
 
+    def test_room_view_GET_incorrect_page(self):
+        response = self.client.get('%s?page=%s' % (reverse('room-page', args=['1']), '23'))
+        self.assertEqual(response.status_code, 200)
+
     def test_room_view_GET_authenticated(self):
         self.client.login(email='TestEmail@gmail.com', password='1234Test5678')
         response = self.client.get(reverse('room-page', args=['1']))
@@ -354,6 +358,11 @@ class TestViews(TestCase):
         self.assertEqual(Message.objects.get(id=1).pluses.all().count(), 0)
         self.assertEqual(Message.objects.get(id=1).minuses.all().count(), 0)
         self.assertEqual(response.status_code, 302)
+
+    def test_message_rating_view_GET_incorrect(self):
+        self.client.login(email='TestEmail@gmail.com', password='1234Test5678')
+        response = self.client.get('%s?action=%s' % (reverse('message-rating-page', args=['3425']), 'p'))
+        self.assertEqual(response.status_code, 404)
 
     def test_message_rating_view_get(self):
         self.client.login(email='TestEmail@gmail.com', password='1234Test5678')
