@@ -191,6 +191,11 @@ a {
     font-size: 75%;
 }
 
+.answer_container {
+    padding-left: 5%;
+    margin-top: -30px;
+}
+
 .message_post_container {
     position: relative;
     padding: 15px;
@@ -207,7 +212,7 @@ a {
     resize: none;
 }
 
-.message_post_container button {
+.message_post_container_button {
     display: block;
     background: var(--navbar-element-color);
     border-style: solid;
@@ -218,9 +223,18 @@ a {
     padding: 10px;
 }
 
-.message_post_container button:hover {
+.message_post_container_button:hover {
     color: var(--navbar-color);
     background: white;
+}
+
+.answer_button {
+    background: var(--background-color);
+    border: none;
+}
+
+.answer_button:hover {
+    color: var(--navbar-color);
 }
 
 .form_container {

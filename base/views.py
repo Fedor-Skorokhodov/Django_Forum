@@ -76,34 +76,50 @@ def room_view(request, key):
     except:
         return HttpResponseNotFound()
 
+    # Getting number of page
     page = request.GET.get('page') if request.GET.get('page') else '1'
     if str.isdigit(page):
         page = int(page)
     else:
         page = 1
 
+    # Calculations for pagination
     messages_on_page = 15
-    total_messages = Message.objects.filter(room=key).count()
+    total_messages = Message.objects.filter(room=key, answer_to=None).count()
     total_pages = math.ceil(total_messages/messages_on_page)
     if page > total_pages or page <= 0: page = 1
     if page == total_pages:
         # if last page
-        messages_to_render = Message.objects.filter(room=key)[(page - 1) * messages_on_page:]
+        messages_to_render = Message.objects.filter(room=key, answer_to=None)[(page - 1) * messages_on_page:]
     else:
-        messages_to_render = Message.objects.filter(room=key)[(page - 1) * messages_on_page: page * messages_on_page]
+        messages_to_render = Message.objects.filter(room=key, answer_to=None)[(page - 1) * messages_on_page: page * messages_on_page]
+
     if request.user.is_authenticated:
         room.viewers.add(request.user)
-    if request.method == 'POST' and not room.is_closed:
+    if request.method == 'POST' and not room.is_closed and request.user.is_authenticated:
         content = request.POST.get('content')
         if not str.isspace(content):
+
+            # Getting id of message to answer to, if exists
+            answer_to_id = request.POST.get('answer_to') if request.POST.get('answer_to') else None
+            if answer_to_id and str.isdigit(answer_to_id):
+                answer_to_id = int(answer_to_id)
+            else:
+                answer_to_id = None
+
             message = Message.objects.create(
                 user=request.user,
                 room=room,
                 content=content,
             )
+            if answer_to_id and Message.objects.get(id=answer_to_id).answer_to is None:
+                message.answer_to = Message.objects.get(id=answer_to_id)
+                message.save()
+
             room.participants.add(request.user)
             room.updated = datetime.now
             room.save()
+
     context = {'room': room,
                'popular_rooms': Room.get_popular(),
                'messages_to_render': messages_to_render,

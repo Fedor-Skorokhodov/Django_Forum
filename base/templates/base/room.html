@@ -52,12 +52,18 @@
         {% include 'base/components/message_container.html' %}
         {% endfor %}
 
-        <div class="message_post_container">
+        <div class="message_post_container" id="post_container">
+            <div id="container_for_answer" style="display: none;">
+                <p>You are answering to the message:</p>
+                <p id="content_for_answer"></p>
+                <button class="answer_button" onclick="clear_answer_to()" id="clear_answer">Cancel</button>
+            </div>
             {% if user.is_authenticated and not room.is_closed %}
             <form action="" method="POST">
                 {% csrf_token %}
+                <input type="hidden" name="answer_to" id="answer_to_input"/>
                 <textarea name="content" required="required" placeholder="Type your message..."></textarea>
-                <button type="submit">Post</button>
+                <button class="message_post_container_button" type="submit">Post</button>
             </form>
             {% elif room.is_closed %}
             <p>The room is closed</p>
