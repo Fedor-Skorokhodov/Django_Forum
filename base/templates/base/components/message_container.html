@@ -7,9 +7,20 @@
     <button class="answer_button" onclick="set_answer_to({{message.id}})">Answer</button>
     {% endif %}
 
-    {% for message in message.message_set.all %}
-    <div class="answer_container">
-        {% include 'base/components/message_container.html' %}
+    <div id="answers_{{message.id}}" style="display: none;">
+        {% for message in message.message_set.all %}
+        <div class="answer_container">
+            {% include 'base/components/message_container.html' %}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    {% if message.message_set.all %}
+    <button class="answer_button" onclick="show_answers({{message.id}})" id="answers_button_show_{{message.id}}">
+        Show answers
+    </button>
+    <button class="answer_button" onclick="hide_answers({{message.id}})" id="answers_button_hide_{{message.id}}" style="display: none;">
+        Hide answers
+    </button>
+    {% endif %}
+
 </div>

@@ -24,3 +24,15 @@ function clear_answer_to() {
     document.getElementById('answer_to_input').value = '';
     document.getElementById('container_for_answer').style.display = 'none';
 }
+
+function show_answers(id) {
+    document.getElementById("answers_"+id).style.display = 'block';
+    document.getElementById("answers_button_show_"+id).style.display = 'none';
+    document.getElementById("answers_button_hide_"+id).style.display = 'block';
+}
+
+function hide_answers(id) {
+    document.getElementById("answers_"+id).style.display = 'none';
+    document.getElementById("answers_button_show_"+id).style.display = 'block';
+    document.getElementById("answers_button_hide_"+id).style.display = 'none';
+}
